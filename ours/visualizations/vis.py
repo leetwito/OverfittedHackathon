@@ -219,7 +219,10 @@ class _PointCloudFrameViewer(PointCloudViewerApp):
 
 
 if __name__ == '__main__':
-    file = './example.csv'
-    labeled_pc = np.genfromtxt(file, delimiter=' ')
+    # file = './example.csv'
+    # file = 'C:/Users/leetw/PycharmProjects/OverfittedHackathon/ours/data_examples/test_video/0000000_pointcloud.csv'
+    # labeled_pc = np.genfromtxt(file, delimiter=' ')
+    file = 'C:/Users/leetw/PycharmProjects/OverfittedHackathon/ours/example0.csv'
+    labeled_pc = np.genfromtxt(file, delimiter=',')
     labeled_pc[:, 3][labeled_pc[:, 4] == 1] = -1
     pcshow(labeled_pc[:, :4])

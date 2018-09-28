@@ -9,6 +9,8 @@ from visualizations.vis import pcshow
 import numpy as np
 from utilities import data_utils
 import os
+import csv
+import time
 
 if __name__ == '__main__':
     base_dir = os.path.dirname(os.getcwd())
@@ -21,4 +23,8 @@ if __name__ == '__main__':
             continue
         pc, ego, label = data_utils.read_all_data(video_dir, frame)
         labeled_pc = np.concatenate((pc, label), -1)
+        # with open('C:/Users/leetw/PycharmProjects/OverfittedHackathon/ours/example{}.csv'.format(idx), 'w+') as f:
+        #     csv_writer = csv.writer(f)
+        #     csv_writer.writerows(labeled_pc)
         pcshow(labeled_pc, on_screen_text=osp.join(video_dir, str(frame)), max_points=80000)
+        # time.sleep(10)
