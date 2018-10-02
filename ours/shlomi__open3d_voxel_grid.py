@@ -22,42 +22,49 @@ df.iloc[:, :3].to_csv("data_examples/test_video_mod/0000000_pointcloud.xyz", hea
 # In[3]:
 
 
-df.iloc[:, :3].head()
+# for creating xyzrgb format (r=intensity, g,b=0)
+df2 = df.copy()
+df2[3] = df2[3]/100
+df2[4] = 0
+df2[5] = 0
+
+df2.to_csv("data_examples/test_video_mod/0000000_pointcloud.xyzrgb", header=None, index=False, sep=" ")
+df2.head()
 
 
 # In[4]:
 
 
-pcd = open3d.read_point_cloud("data_examples/test_video_mod/0000000_pointcloud.xyz")
+pcd = open3d.read_point_cloud("data_examples/test_video_mod/0000000_pointcloud.xyzrgb")
 pcd_pts = np.asarray(pcd.points)
-
-
-# In[5]:
-
-
-print(pcd)
 
 
 # In[6]:
 
 
+print(pcd)
+
+
+# In[9]:
+
+
 print(pcd_pts)
 
 
-# In[ ]:
+# In[10]:
 
 
-# open3d.draw_geometries([pcd])
+open3d.draw_geometries([pcd])
 
 
-# In[ ]:
+# In[11]:
 
 
-downpcd = open3d.voxel_down_sample(pcd, voxel_size = 1.)
+downpcd = open3d.voxel_down_sample(pcd, voxel_size = 0.00001)
 downpcd_pts = np.asarray(downpcd.points)
 
 
-# In[ ]:
+# In[12]:
 
 
 print(downpcd_pts)
@@ -95,28 +102,4 @@ print(df_dwn.max(axis=0))
 
 pcd_pts.shape, downpcd_pts.shape
 # some points were merged to same voxel.
-
-
-# In[ ]:
-
-
-df.shape
-
-
-# In[ ]:
-
-
-df.drop_duplicates().shape
-
-
-# In[ ]:
-
-
-df_pcd.shape
-
-
-# In[ ]:
-
-
-df_pcd.drop_duplicates().shape
 
