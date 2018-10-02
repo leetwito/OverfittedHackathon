@@ -14,7 +14,8 @@ import time
 
 if __name__ == '__main__':
     base_dir = os.path.dirname(os.getcwd())
-    video_dir = os.path.join(base_dir, 'data_examples', 'test_video')
+    # video_dir = os.path.join(base_dir, 'data_examples', 'test_video')
+    video_dir = os.path.join(base_dir, 'data_examples', 'our_data')
     frame_num = data_utils.count_frames(video_dir)
     min_idx = 0
     decimate = 1
@@ -27,4 +28,4 @@ if __name__ == '__main__':
         #     csv_writer = csv.writer(f)
         #     csv_writer.writerows(labeled_pc)
         pcshow(labeled_pc, on_screen_text=osp.join(video_dir, str(frame)), max_points=80000)
-        # time.sleep(10)
+        time.sleep(10)

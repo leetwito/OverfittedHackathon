@@ -26,15 +26,15 @@ if __name__ == '__main__':
         pc_file = data_utils.frame_to_filename(video_dir, idx, 'pointcloud')
         pc, ego, label = data_utils.read_all_data(video_dir, idx)
         ego_rt = RotationTranslationData(vecs=(ego[:3], ego[3:]))
-        ego_pc = ego_rt.apply_transform(pc[:, :3])
+        ego_pc = ego_rt.apply_transform(pc[:, :3]) # pc is (x, y, z, lumin)
         ego_pc = np.concatenate((ego_pc, pc[:, 3:4]), -1)
 
         labeled_pc = np.concatenate((ego_pc, label), -1)
-        agg_point_cloud_list.append(labeled_pc)
+        agg_point_cloud_list.append(labeled_pc) # aggregate all points
         if len(agg_point_cloud_list) > max_frames_to_keep:
             agg_point_cloud_list = agg_point_cloud_list[1:]
-        agg_point_cloud = np.concatenate(agg_point_cloud_list, 0)
-        pc2disp = ego_rt.inverse().apply_transform(agg_point_cloud[:, :3])
+        agg_point_cloud = np.concatenate(agg_point_cloud_list, 0) # concat points from all frames
+        pc2disp = ego_rt.inverse().apply_transform(agg_point_cloud[:, :3]) # apply ego transform
         pc2disp = np.concatenate((pc2disp, agg_point_cloud[:, 3:]), -1)
         pc2disp = pc2disp[np.linalg.norm(pc2disp[:, :3], axis=1) < max_dist]
         pcshow(pc2disp, on_screen_text=pc_file, max_points=32000 * max_frames_to_keep)
