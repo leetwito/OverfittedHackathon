@@ -39,44 +39,44 @@ pcd = open3d.read_point_cloud("data_examples/test_video_mod/0000000_pointcloud.x
 pcd_pts = np.asarray(pcd.points)
 
 
-# In[6]:
+# In[5]:
 
 
 print(pcd)
 
 
-# In[9]:
+# In[6]:
 
 
 print(pcd_pts)
 
 
-# In[10]:
+# In[7]:
 
 
-open3d.draw_geometries([pcd])
+# open3d.draw_geometries([pcd])
 
 
-# In[11]:
+# In[8]:
 
 
 downpcd = open3d.voxel_down_sample(pcd, voxel_size = 0.00001)
 downpcd_pts = np.asarray(downpcd.points)
 
 
-# In[12]:
+# In[9]:
 
 
 print(downpcd_pts)
 
 
-# In[ ]:
+# In[10]:
 
 
-open3d.draw_geometries([downpcd])
+# open3d.draw_geometries([downpcd])
 
 
-# In[ ]:
+# In[11]:
 
 
 df_pcd = pd.DataFrame(pcd_pts)
@@ -87,7 +87,7 @@ print(df_pcd.max(axis=0))
 # df_pcd.iloc[:, 0].hist()
 
 
-# In[ ]:
+# In[12]:
 
 
 df_dwn = pd.DataFrame(downpcd_pts).astype(int)
@@ -97,7 +97,7 @@ print("\nmax points:")
 print(df_dwn.max(axis=0))
 
 
-# In[ ]:
+# In[13]:
 
 
 pcd_pts.shape, downpcd_pts.shape
