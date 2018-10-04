@@ -17,10 +17,10 @@ if __name__ == '__main__':
     # base_dir = os.path.dirname(os.getcwd())
     # video_dir = os.path.join(base_dir, 'data_examples', 'test_video')
 
-    base_dir = "E:\Datasets\DataHack\World\Train"
+    # base_dir = "E:\Datasets\DataHack\World\Train"
+    base_dir = "C:/Users/leetw/PycharmProjects/OverfittedHackathon/ours"
     # base_dir = "E:\Datasets\DataHack\Train"
-    # base_dir = "C:/Users/leetw/PycharmProjects/OverfittedHackathon/ours"
-    video_dir = os.path.join(base_dir, 'vid_1')
+    video_dir = os.path.join(base_dir, 'tmp_only_labeled')
 
 
     frame_num = data_utils.count_frames(video_dir)
