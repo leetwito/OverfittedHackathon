@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[2]:
+# In[1]:
 
 
 import pandas as pd
@@ -15,7 +15,7 @@ import numpy as np
 import copy
 
 
-# In[18]:
+# In[2]:
 
 
 path = "voxelling_output/submission_files/check_registration/"
@@ -26,7 +26,7 @@ pcw1.iloc[:, :3].to_csv(path+"source.xyz", sep=" ", header=None, index=None)
 pcw2.iloc[:, :3].to_csv(path+"target.xyz", sep=" ", header=None, index=None)
 
 
-# In[19]:
+# In[13]:
 
 
 def draw_registration_result(source, target, transformation):
@@ -38,41 +38,41 @@ def draw_registration_result(source, target, transformation):
     draw_geometries([source_temp, target_temp])
 
 
-# In[20]:
+# In[4]:
 
 
 source = read_point_cloud(path+"source.xyz")
 target = read_point_cloud(path+"target.xyz")
 
 
-# In[21]:
+# In[5]:
 
 
 source
 
 
-# In[72]:
+# In[10]:
 
 
 threshold = 1000000000000000000
 
 # trans_init = np.eye(4)
-# trans_init[:3, 3] = 100*np.random.rand(3)
+trans_init[:3, 3] = 100*np.random.rand(3)
 
-trans_init = np.array([[np.cos(np.pi/4), np.sin(np.pi/4), 0., 10.],
-                      [-np.sin(np.pi/4), np.cos(np.pi/4), 0., 20.],
-                      [0,0,1,10],
-                      [0,0,0,1]])
+# trans_init = np.array([[np.cos(np.pi/8), np.sin(np.pi/8), 0., 10.],
+#                       [-np.sin(np.pi/8), np.cos(np.pi/8), 0., 20.],
+#                       [0,0,1,10],
+#                       [0,0,0,1]])
 trans_init
 
 
-# In[73]:
+# In[11]:
 
 
 # draw_registration_result(source, target, trans_init)
 
 
-# In[74]:
+# In[12]:
 
 
 print("Initial alignment")
@@ -81,7 +81,7 @@ evaluation = evaluate_registration(source, target,
 print(evaluation)
 
 
-# In[75]:
+# In[14]:
 
 
 print("Apply point-to-point ICP")
@@ -94,7 +94,19 @@ print("")
 draw_registration_result(source, target, reg_p2p.transformation)
 
 
-# In[63]:
+# In[ ]:
+
+
+draw_registration_result(source, target, np.eye(4))
+
+
+# In[16]:
+
+
+reg_p2p.transformation.shape
+
+
+# In[ ]:
 
 
 print("Apply point-to-plane ICP")
@@ -107,7 +119,10 @@ print("")
 draw_registration_result(source, target, reg_p2l.transformation)
 
 
+# -----------------------------------
+
 # In[ ]:
+
 
 
 from functools import partial
