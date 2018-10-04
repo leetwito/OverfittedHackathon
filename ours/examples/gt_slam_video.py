@@ -13,8 +13,14 @@ from utilities import data_utils
 
 
 if __name__ == '__main__':
-    base_dir = os.path.dirname(os.getcwd())
-    video_dir = os.path.join(base_dir, 'data_examples', 'test_video')
+
+
+    # base_dir = "E:\Datasets\DataHack\World\Train"
+    base_dir = "E:\Datasets\DataHack\Train"
+    video_dir = os.path.join(base_dir, 'vid_1')
+
+    # base_dir = os.path.dirname(os.getcwd())
+    # video_dir = os.path.join(base_dir, 'data_examples', 'test_video')
     agg_point_cloud_list = []
     max_frames_to_keep = 10
     min_idx = 0
@@ -30,11 +36,21 @@ if __name__ == '__main__':
         ego_pc = np.concatenate((ego_pc, pc[:, 3:4]), -1)
 
         labeled_pc = np.concatenate((ego_pc, label), -1)
+
+        # labeled_pc = np.concatenate((pc, label), -1)
+
         agg_point_cloud_list.append(labeled_pc) # aggregate all points
         if len(agg_point_cloud_list) > max_frames_to_keep:
             agg_point_cloud_list = agg_point_cloud_list[1:]
         agg_point_cloud = np.concatenate(agg_point_cloud_list, 0) # concat points from all frames
-        pc2disp = ego_rt.inverse().apply_transform(agg_point_cloud[:, :3]) # apply ego transform
-        pc2disp = np.concatenate((pc2disp, agg_point_cloud[:, 3:]), -1)
-        pc2disp = pc2disp[np.linalg.norm(pc2disp[:, :3], axis=1) < max_dist]
-        pcshow(pc2disp, on_screen_text=pc_file, max_points=32000 * max_frames_to_keep)
+
+        # pc2disp = ego_rt.inverse().apply_transform(agg_point_cloud[:, :3]) # apply ego transform
+        # pc2disp = np.concatenate((pc2disp, agg_point_cloud[:, 3:]), -1)
+        # pc2disp = pc2disp[np.linalg.norm(pc2disp[:, :3], axis=1) < max_dist]
+        # pcshow(pc2disp, on_screen_text=pc_file, max_points=32000 * max_frames_to_keep)
+
+        agg_point_cloud = agg_point_cloud[np.linalg.norm(agg_point_cloud[:, :3], axis=1) < max_dist]
+        pcshow(agg_point_cloud, on_screen_text=pc_file, max_points=32000 * max_frames_to_keep)
+
+
+

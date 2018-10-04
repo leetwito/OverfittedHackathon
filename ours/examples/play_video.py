@@ -18,8 +18,10 @@ if __name__ == '__main__':
     # video_dir = os.path.join(base_dir, 'data_examples', 'test_video')
 
     base_dir = "E:\Datasets\DataHack\World\Train"
-    # video_dir = os.path.join(base_dir, 'vid_1')
-    video_dir = os.path.join(base_dir, 'vid_2')
+    # base_dir = "E:\Datasets\DataHack\Train"
+    # base_dir = "C:/Users/leetw/PycharmProjects/OverfittedHackathon/ours"
+    video_dir = os.path.join(base_dir, 'vid_1')
+
 
     frame_num = data_utils.count_frames(video_dir)
     min_idx = 0
@@ -33,5 +35,5 @@ if __name__ == '__main__':
         #     csv_writer = csv.writer(f)
         #     csv_writer.writerows(labeled_pc)
         pcshow(labeled_pc, on_screen_text=osp.join(video_dir, str(frame)), max_points=80000)
-        time.sleep(5)
+        time.sleep(1)
 

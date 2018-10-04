@@ -10,6 +10,13 @@ import os
 from time import time
 from tqdm import tqdm
 
+from utilities.math_utils import RotationTranslationData
+from utilities import data_utils
+import os
+from tqdm import tqdm
+import numpy as np
+import pandas as pd
+
 
 # In[2]:
 
@@ -39,23 +46,12 @@ def pc_to_grid(df, voxel_size, dest_dir, dest_name):
 # In[3]:
 
 
-df_pc = pd.read_csv('data_examples/test_video/0000000_pointcloud.csv')
-voxel_size = 100
-dest_dir = 'data_examples/test_video_mod/'
-dest_name = '0000000'
+# df_pc = pd.read_csv('data_examples/test_video/0000000_pointcloud.csv')
+# voxel_size = 100
+# dest_dir = 'data_examples/test_video_mod/'
+# dest_name = '0000000'
 
-pc_to_grid(df_pc, voxel_size, dest_dir, dest_name)
-
-
-# In[ ]:
-
-
-from utilities.math_utils import RotationTranslationData
-from utilities import data_utils
-import os
-from tqdm import tqdm
-import numpy as np
-import pandas as pd
+# pc_to_grid(df_pc, voxel_size, dest_dir, dest_name)
 
 
 # In[ ]:
@@ -95,8 +91,8 @@ def transform_folder_to_world(sub_dir):
 # In[ ]:
 
 
-base_dir = "E:\Datasets\DataHack\Train"
-transform_folder_to_world('vid_1')
+# base_dir = "E:\Datasets\DataHack\Train"
+# transform_folder_to_world('vid_11_2')
 
 
 # In[ ]:
@@ -121,4 +117,10 @@ transform_folder_to_world('vid_1')
 
 
 # b.max() - b.min()
+
+
+# In[ ]:
+
+
+[]
 
