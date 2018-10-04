@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 import pandas as pd
@@ -11,7 +11,7 @@ from time import time
 from tqdm import tqdm
 
 
-# In[ ]:
+# In[2]:
 
 
 def pc_to_grid(df, voxel_size, dest_dir, dest_name):
@@ -36,15 +36,15 @@ def pc_to_grid(df, voxel_size, dest_dir, dest_name):
     print('single file runtime: {}'.format(time()-start_time))
 
 
-# In[ ]:
+# In[3]:
 
-def run_pc_to_grid():
-    df_pc = pd.read_csv('data_examples/test_video/0000000_pointcloud.csv')
-    voxel_size = 100
-    dest_dir = 'data_examples/test_video_mod/'
-    dest_name = '0000000'
 
-    pc_to_grid(df_pc, voxel_size, dest_dir, dest_name)
+df_pc = pd.read_csv('data_examples/test_video/0000000_pointcloud.csv')
+voxel_size = 100
+dest_dir = 'data_examples/test_video_mod/'
+dest_name = '0000000'
+
+pc_to_grid(df_pc, voxel_size, dest_dir, dest_name)
 
 
 # In[ ]:
@@ -56,7 +56,6 @@ import os
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
-from multiprocessing import Pool
 
 
 # In[ ]:
@@ -72,17 +71,18 @@ def transform_frame_to_world(pc, ego):
 
 
 def transform_folder_to_world(sub_dir):
+    base_dir = "E:\Datasets\DataHack\Train"
     base_res_dir = "E:\Datasets\DataHack\World\Train"
     print('Working on sub_dir: {}'.format(sub_dir))
 
-    for idx in tqdm(data_utils.enumerate_frames(os.path.join(base_dir, sub_dir))):
+    for idx in data_utils.enumerate_frames(os.path.join(base_dir, sub_dir)):
         pc_file = os.path.join(base_res_dir, data_utils.frame_to_filename(sub_dir, idx, 'pointcloud'))
         if os.path.exists(pc_file):
             continue
         pc, ego, label = data_utils.read_all_data(os.path.join(base_dir, sub_dir), idx)
         ego_pc = transform_frame_to_world(pc, ego)
         ego_pc = np.concatenate((ego_pc, pc[:, 3:4]), -1)
-        df = pd.DataFrame(ego_pc)
+        df = (pd.DataFrame(ego_pc) * 100).astype(int)
         res_dir = os.path.join(base_res_dir, sub_dir)
         if not os.path.exists(res_dir):
             os.makedirs(res_dir)
@@ -95,8 +95,30 @@ def transform_folder_to_world(sub_dir):
 # In[ ]:
 
 
-if __name__ == '__main__':
-    base_dir = "E:\Datasets\DataHack\Train"
-    with Pool(5) as p:
-        p.map(transform_folder_to_world, os.listdir(base_dir))
+base_dir = "E:\Datasets\DataHack\Train"
+transform_folder_to_world('vid_1')
+
+
+# In[ ]:
+
+
+# a = pd.read_csv("E:/Datasets/DataHack/Train/vid_1/0000000_pointcloud.csv", header=None)
+
+
+# In[ ]:
+
+
+# b = pd.read_csv("E:/Datasets/DataHack/World/Train/vid_1/0000000_pointcloud.csv", header=None)
+
+
+# In[ ]:
+
+
+# a.max() - a.min()
+
+
+# In[ ]:
+
+
+# b.max() - b.min()
 
