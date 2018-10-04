@@ -15,12 +15,18 @@ import time
 if __name__ == '__main__':
 
     # base_dir = os.path.dirname(os.getcwd())
+
+
+    base_dir = "E:\Datasets\DataHack\World\Train"
+    video_dir = os.path.join(base_dir, 'vid_1')
+
+
     # video_dir = os.path.join(base_dir, 'data_examples', 'test_video')
 
-    # base_dir = "E:\Datasets\DataHack\World\Train"
-    base_dir = "C:/Users/leetw/PycharmProjects/OverfittedHackathon/ours"
+    # base_dir = "C:/Users/leetw/PycharmProjects/OverfittedHackathon/ours/tmp_only_labeled"
     # base_dir = "E:\Datasets\DataHack\Train"
-    video_dir = os.path.join(base_dir, 'tmp_only_labeled')
+    # video_dir = os.path.join(base_dir, 'tmp_only_labeled')
+    # video_dir = os.path.join(base_dir, 'first_works')
 
 
     frame_num = data_utils.count_frames(video_dir)
@@ -34,6 +40,7 @@ if __name__ == '__main__':
         # with open('C:/Users/leetw/PycharmProjects/OverfittedHackathon/ours/example{}.csv'.format(idx), 'w+') as f:
         #     csv_writer = csv.writer(f)
         #     csv_writer.writerows(labeled_pc)
-        pcshow(labeled_pc, on_screen_text=osp.join(video_dir, str(frame)), max_points=80000)
-        time.sleep(1)
+        pcshow(labeled_pc,  point_cloud_coloring=None, on_screen_text=osp.join(video_dir, str(frame)))
+        # pcshow(labeled_pc, on_screen_text=osp.join(video_dir, str(frame)), max_points=80000, point_cloud_coloring=None)
+        # time.sleep(1)
 

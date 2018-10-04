@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[ ]:
+# In[15]:
 
 
 import pandas as pd
@@ -12,9 +12,10 @@ from tqdm import tqdm
 from utilities.math_utils import RotationTranslationData
 from utilities import data_utils
 from glob import glob
+import pickle
 
 
-# In[ ]:
+# In[16]:
 
 
 def add_grid_and_hash(df, voxel_size):
@@ -29,56 +30,31 @@ def add_grid_and_hash(df, voxel_size):
     return df_grid
 
 
-# In[ ]:
-
-
-# def classify(video_dir, scene_size, freeze_size, voxel_size):
-#     """ scene_size - num of frames befor and after the the examed frame
-#         freeze_size - num of frames to skip
-#     """
-#     befor = scene_size
-#     after = freeze_size + scene_size
-#     end = 2*scene_size + freeze
-    
-#     scene_frames = glob(video_dir+"/*point*")[:befor] + glob(video_dir+"/*point*")[after:end]
-    
-
-
-# In[ ]:
-
-
-# %%time
-# base_dir = "E:/Datasets/DataHack/World/Train/vid_1/"
-# list_df_voxel_scene = []
-# for f in glob(base_dir+"/*point*")[:31]:
-#     list_df_voxel_scene.append( add_grid_and_hash(pd.read_csv(f, header=None), 20))
-
-
-# In[ ]:
-
-
-# len(list_df_voxel_scene)
-# list_df_voxel_scene[0]
-
-
 # -----------------------------
 
-# In[ ]:
+# In[22]:
 
 
-base_dir = "E:/Datasets/DataHack/World/Train/vid_1/"
+base_dir = "E:/Datasets/DataHack/World/Train/vid_2/"
+pickles_path = "voxelling_output/"
 n_frames_per_side=10
 shift=5
 voxel_size=20
 
 
-# In[ ]:
+# In[23]:
 
 
 all_files = glob(base_dir+"/*point*")
 
 
-# In[ ]:
+# In[24]:
+
+
+vid = base_dir.split("/")[-2]
+
+
+# In[25]:
 
 
 def create_list_dfs_voxel_scene(base_dir, voxel_size, upto=None):
@@ -97,7 +73,13 @@ def create_list_dfs_voxel_scene(base_dir, voxel_size, upto=None):
 # In[ ]:
 
 
-list_df_voxel_scene = create_list_dfs_voxel_scene(base_dir, voxel_size, upto=50)
+list_df_file = pickles_path+"list_df_voxel_scene__%s__voxel_size_%d.p"%(vid, voxel_size)
+
+if os.path.exists(list_df_file):
+    list_df_voxel_scene = pickle.load(open(list_df_file, "rb"))
+else:
+    list_df_voxel_scene = create_list_dfs_voxel_scene(base_dir, voxel_size, upto=None)
+    pickle.dump(list_df_voxel_scene, open(pickles_path+"list_df_voxel_scene__%s__voxel_size_%d.p"%(vid, voxel_size), "wb"))
 
 
 # ----------------------
@@ -238,7 +220,6 @@ def save_frame_for_movie(frame, folder, all_files, frame_idx):
     egomotion_filename = filename.replace('pointcloud', 'egomotion')
     pd.DataFrame([0.]*6).T.to_csv(folder + egomotion_filename, header=None, index=False)
     print('frame {} saved successfuly'.format(frame_idx))
-    
 
 
 # In[ ]:
@@ -254,8 +235,10 @@ for frame_idx in tqdm(range(15,25)):
     df_frame_orig_subtracted = df_frame_orig[df_labels]
     print(df_frame_orig_subtracted.shape)
     df_labels = df_labels.astype(int)
+    df_labels.to_csv(pickles_path+"df_labels__frame_%d__%s__voxel_size_%d.p"%(frame_idx, vid, voxel_size))
     print(df_labels.sum())
     df_frame_orig_subtracted = df_frame_orig_subtracted.iloc[:4]
+    df_frame_orig_subtracted.to_csv(pickles_path+"df_frame_orig_subtracted__frame_%d__%s__voxel_size_%d.p"%(frame_idx, vid, voxel_size))
     save_frame_for_movie(df_frame_orig_subtracted, "tmp_only_labeled/", all_files, frame_idx)
 
 
