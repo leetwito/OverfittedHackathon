@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[2]:
+# In[1]:
 
 
 import pandas as pd
@@ -18,7 +18,7 @@ from time import time
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[ ]:
+# In[2]:
 
 
 def add_grid_and_hash(df, voxel_size):
@@ -35,29 +35,30 @@ def add_grid_and_hash(df, voxel_size):
 
 # -----------------------------
 
-# In[ ]:
+# In[3]:
 
 
-base_dir = "E:/Datasets/DataHack/World2/Train/vid_1/"
+base_dir = "voxelling_output/World2/Train/vid_1/"
 pickles_path = "voxelling_output/"
+orig_files_path = "voxelling_output/Original_Frames/vid_1/"
 n_frames_per_side=10
 shift=5
 voxel_size=20
 
 
-# In[ ]:
+# In[4]:
 
 
 all_files = glob(base_dir+"/*point*")
 
 
-# In[ ]:
+# In[5]:
 
 
 vid = base_dir.split("/")[-2]
 
 
-# In[ ]:
+# In[6]:
 
 
 def create_list_dfs_voxel_scene(base_dir, voxel_size, upto=None):
@@ -73,7 +74,7 @@ def create_list_dfs_voxel_scene(base_dir, voxel_size, upto=None):
     return list_df_voxel_scene
 
 
-# In[ ]:
+# In[7]:
 
 
 list_df_file = pickles_path+"list_df_voxel_scene__%s__voxel_size_%d.p"%(vid, voxel_size)
@@ -87,7 +88,7 @@ else:
 
 # ----------------------
 
-# In[ ]:
+# In[8]:
 
 
 def get_list_idx_for_frame(frame_idx, n_frames_per_side, shift):
@@ -95,16 +96,27 @@ def get_list_idx_for_frame(frame_idx, n_frames_per_side, shift):
     return list_idx
 
 
-# In[ ]:
+# In[9]:
 
 
-def create_scene_voxel_df(list_df_voxel_scene, list_idx):
+def create_scene_voxel_df(list_df_voxel_scene, list_idx, frac_to_drop=0.35):
     list_df_voxel_scene_for_frame = list_df_voxel_scene[list_idx]
-    df_scene = pd.concat(list_df_voxel_scene_for_frame).drop_duplicates("voxel_id")
+    df_scene = pd.concat(list_df_voxel_scene_for_frame)#.drop_duplicates("voxel_id")
+#     df_scene.groupby(["x_grid", "y_grid", "z_grid"]).value_counts()
+    dfff = df_scene.groupby(["x_grid", "y_grid", "z_grid"]).apply(len).reset_index(drop=False)
+
+    dfff = dfff[dfff[0]>frac_to_drop*len(list_idx)]
+    dfff["v_index"] = dfff.iloc[:, :3].apply(lambda x: hash((x.iloc[0], x.iloc[1], x.iloc[2])), axis=1)
+#     print(df_scene.shape)
+    df_scene.drop_duplicates(["x_grid", "y_grid", "z_grid"], inplace=True)
+#     print(df_scene.shape)
+    df_scene = df_scene[df_scene.voxel_id.isin(dfff.v_index)]
+#     print(df_scene.shape)
+    
     return df_scene
 
 
-# In[ ]:
+# In[10]:
 
 
 def get_df_voxel_subtracted_frame(list_df_voxel_scene, frame_idx, n_frames_per_side, shift):
@@ -118,7 +130,7 @@ def get_df_voxel_subtracted_frame(list_df_voxel_scene, frame_idx, n_frames_per_s
     return df_subtracted_frame
 
 
-# In[ ]:
+# In[11]:
 
 
 def point_to_voxel(ser, voxel_size):
@@ -131,7 +143,7 @@ def point_to_voxel(ser, voxel_size):
     return voxel_id
 
 
-# In[ ]:
+# In[12]:
 
 
 def save_frame_for_movie(frame, folder, all_files, frame_idx):
@@ -147,82 +159,226 @@ def save_frame_for_movie(frame, folder, all_files, frame_idx):
     print('frame {} saved successfuly'.format(frame_idx))
 
 
-# In[ ]:
+# In[13]:
 
 
 # frame_idx=15
 # todo: add skips
 
 
-# In[ ]:
+# In[14]:
 
 
 # list_idx = get_list_idx_for_frame(frame_idx, n_frames_per_side, shift)
 # list_idx
 
 
-# In[ ]:
+# In[15]:
 
 
 # df_subtracted_frame = get_df_voxel_subtracted_frame(list_df_voxel_scene, frame_idx, n_frames_per_side, shift)
 
 
-# In[ ]:
+# In[16]:
 
 
 # df_subtracted_frame.head()
 
 
-# In[ ]:
+# In[17]:
 
 
 # df_frame_orig = pd.read_csv(all_files[frame_idx], header=None)
 
 
-# In[ ]:
+# In[18]:
 
 
 # %%time
 # df_frame_orig["voxel_id"] =  df_frame_orig.apply(lambda x: point_to_voxel(x, voxel_size), axis=1)
 
 
-# In[ ]:
+# In[19]:
 
 
 # df_frame_orig.head()
 
 
-# In[ ]:
+# In[20]:
 
 
 # df_labels = df_frame_orig.voxel_id.isin(df_subtracted_frame.voxel_id)
 # df_labels.sum()
 
 
-# In[ ]:
+# In[21]:
 
 
 # df_frame_orig_subtracted = df_frame_orig[df_labels]
 # df_labels = df_labels.astype(int)
 
 
-# In[ ]:
+# In[22]:
 
 
 # df_frame_orig_subtracted.shape
 
 
-# In[ ]:
+# In[23]:
 
 
 # df_frame_orig_subtracted = df_frame_orig_subtracted.iloc[:4]
 
 
-# In[ ]:
+# In[24]:
 
 
 # # 
 # save_frame_for_movie(df_frame_orig_subtracted, "tmp_only_labeled/", all_files, frame_idx)
+
+
+# In[25]:
+
+
+def remove_distant_lines(frame_idx, df_labels, orig_files_path):
+    filename = (7-len(str(frame_idx)))*"0"+str(frame_idx)+"_pointcloud.csv"
+    dff = pd.read_csv(orig_files_path+filename, header=None)
+    dff.columns = list("xyzr")
+    dff["l"] = df_labels.tolist()
+    dff = dff[dff.l==1]
+#     print(dff.shape)
+#     dff.head() 
+
+#     dff = dff[dff.x>dff.x.min()+(dff.x.max()-dff.x.min())*0.2]
+#     print(dff.shape)
+#     dff.head()
+    
+    dff = dff[dff.z<dff.z.min()+(dff.z.max()-dff.z.min())*0.3]
+#     print(dff.shape)
+#     dff.head()
+
+    dff = dff[(dff["r"]>5)&(dff["r"]<15)]
+#     print(dff.shape)
+#     dff.head()
+
+    df_labels.loc[dff.index] = False
+    return df_labels
+
+
+# In[26]:
+
+
+def remove_distant_points(frame_idx, df_labels, orig_files_path):
+    filename = (7-len(str(frame_idx)))*"0"+str(frame_idx)+"_pointcloud.csv"
+    dff = pd.read_csv(orig_files_path+filename, header=None)
+    dff.columns = list("xyzr")
+    dff["l"] = df_labels.tolist()
+    dff = dff[dff.l==1]
+#     print(dff.shape)
+#     dff.head() 
+#     print(dff.describe())
+    dff = dff[dff["x"]>5500]
+#     print(dff.describe())
+#     rr = np.sqrt(dff.x**2+dff.y**2)
+#     dff = dff[rr<10]
+#     print(dff.shape)
+#     dff.head()
+    
+#     dff = dff[dff.z<dff.z.min()+(dff.z.max()-dff.z.min())*0.3]
+#     print(dff.shape)
+#     dff.head()
+
+#     dff = dff[(dff["r"]>5)&(dff["r"]<15)]
+#     print(dff.shape)
+#     dff.head()
+
+    df_labels.loc[dff.index] = False
+    return df_labels
+
+
+# In[27]:
+
+
+def remove_high_theta_points(frame_idx, df_labels, orig_files_path):
+    filename = (7-len(str(frame_idx)))*"0"+str(frame_idx)+"_pointcloud.csv"
+    dff = pd.read_csv(orig_files_path+filename, header=None)
+    dff.columns = list("xyzr")
+    dff["l"] = df_labels.tolist()
+    dff = dff[dff.l==1]
+#     print(dff.shape)
+#     dff.head() 
+
+    theta = np.abs(np.arctan(dff.y/dff.x))
+    dff = dff[theta>0.9*theta.max()]
+#     print(dff.shape)
+#     dff.head()
+    
+#     dff = dff[dff.z<dff.z.min()+(dff.z.max()-dff.z.min())*0.3]
+#     print(dff.shape)
+#     dff.head()
+
+#     dff = dff[(dff["r"]>5)&(dff["r"]<15)]
+#     print(dff.shape)
+#     dff.head()
+
+    df_labels.loc[dff.index] = False
+    return df_labels
+
+
+# In[28]:
+
+
+def remove_close_lines(frame_idx, df_labels, orig_files_path):
+    filename = (7-len(str(frame_idx)))*"0"+str(frame_idx)+"_pointcloud.csv"
+    dff = pd.read_csv(orig_files_path+filename, header=None)
+    dff.columns = list("xyzr")
+    dff["l"] = df_labels.tolist()
+    dff = dff[dff.l==1]
+#     print(dff.shape)
+#     dff.head() 
+
+    dff = dff[dff.x<dff.x.min()+(dff.x.max()-dff.x.min())*0.1]
+#     print(dff.shape)
+#     dff.head()
+    
+    dff = dff[dff.z<dff.z.min()+(dff.z.max()-dff.z.min())*0.01]
+#     print(dff.shape)
+#     dff.head()
+
+#     dff = dff[(dff["r"]>5)&(dff["r"]<15)]
+# #     print(dff.shape)
+# #     dff.head()
+
+    df_labels.loc[dff.index] = False
+    return df_labels
+
+
+# In[29]:
+
+
+def remove_high_points(frame_idx, df_labels, orig_files_path):
+    filename = (7-len(str(frame_idx)))*"0"+str(frame_idx)+"_pointcloud.csv"
+    dff = pd.read_csv(orig_files_path+filename, header=None)
+    dff.columns = list("xyzr")
+    dff["l"] = df_labels.tolist()
+    dff = dff[dff.l==1]
+#     print(dff.shape)
+#     dff.head() 
+
+#     dff = dff[dff.x<dff.x.min()+(dff.x.max()-dff.x.min())*0.15]
+#     print(dff.shape)
+#     dff.head()
+    
+    dff = dff[dff.z>400]
+    print(dff.shape)
+    dff.head()
+
+#     dff = dff[(dff["r"]>5)&(dff["r"]<15)]
+# #     print(dff.shape)
+# #     dff.head()
+
+    df_labels.loc[dff.index] = False
+    return df_labels
 
 
 # ---------------------------------
@@ -231,7 +387,7 @@ def save_frame_for_movie(frame, folder, all_files, frame_idx):
 
 
 # frame_idx=15
-for frame_idx in tqdm(range(31,900)):
+for frame_idx in tqdm(range(15,900)):
     print("=========================================================================")
     print("frame_idx = %d"%frame_idx)
     print("=========================================================================")
@@ -239,6 +395,8 @@ for frame_idx in tqdm(range(31,900)):
     tic = time()
     list_idx = get_list_idx_for_frame(frame_idx, n_frames_per_side, shift)
     toc = time(); print(toc-tic, ": list_idx = get_list_idx_for_frame(frame_idx, n_frames_per_side, shift)"); tic=time()
+    
+    df_scene = create_scene_voxel_df(list_df_voxel_scene, list_idx)
     
     df_subtracted_frame = get_df_voxel_subtracted_frame(list_df_voxel_scene, frame_idx, n_frames_per_side, shift)
     toc = time(); print(toc-tic, ": df_subtracted_frame = get_df_voxel_subtracted_frame(list_df_voxel_scene, frame_idx, n_frames_per_side, shift)"); tic=time()
@@ -250,6 +408,14 @@ for frame_idx in tqdm(range(31,900)):
     
     df_labels = df_frame_orig.voxel_id.isin(df_subtracted_frame.voxel_id)
     toc = time(); print(toc-tic, ": df_labels = df_frame_orig.voxel_id.isin(df_subtracted_frame.voxel_id)"); tic=time()
+    
+    # filters
+    df_labels = remove_distant_lines(frame_idx, df_labels, orig_files_path)
+    df_labels = remove_distant_points(frame_idx, df_labels, orig_files_path)
+    df_labels = remove_close_lines(frame_idx, df_labels, orig_files_path)
+    df_labels = remove_high_points(frame_idx, df_labels, orig_files_path)
+    df_labels = remove_high_theta_points(frame_idx, df_labels, orig_files_path)
+#     df_labels.iloc[:] = False
     
     df_frame_orig_subtracted = df_frame_orig[df_labels]
     toc = time(); print(toc-tic, ": df_frame_orig_subtracted = df_frame_orig[df_labels]"); tic=time()
@@ -264,8 +430,35 @@ for frame_idx in tqdm(range(31,900)):
     print(df_labels.sum())
     df_frame_orig_subtracted = df_frame_orig_subtracted.iloc[:, :4]
     df_frame_orig_subtracted.to_csv(pickles_path+"df_frame_orig_subtracted__frame_%d__%s__voxel_size_%d.csv"%(frame_idx, vid, voxel_size), header=None, index=False)
-    save_frame_for_movie(df_frame_orig_subtracted, "tmp_only_labeled/", all_files, frame_idx)
+#     save_frame_for_movie(df_frame_orig_subtracted, "tmp_only_labeled/", all_files, frame_idx)
     toc = time(); print(toc-tic, ': save_frame_for_movie(df_frame_orig_subtracted, "tmp_only_labeled/", all_files, frame_idx)'); tic=time()
+
+
+# In[ ]:
+
+
+df_scene.head()
+
+
+# In[ ]:
+
+
+# frac_to_drop=0.5
+# dfff = df_scene.groupby(["x_grid", "y_grid", "z_grid"]).apply(len).reset_index(drop=False)
+
+# dfff = dfff[dfff[0]>frac_to_drop*len(list_idx)]
+# dfff["v_index"] = dfff.iloc[:, :3].apply(lambda x: hash((x.iloc[0], x.iloc[1], x.iloc[2])), axis=1)
+# print(df_scene.shape)
+# df_scene.drop_duplicates(["x_grid", "y_grid", "z_grid"], inplace=True)
+# print(df_scene.shape)
+# df_scene = df_scene[df_scene.voxel_id.isin(dfff.v_index)]
+# print(df_scene.shape)
+
+
+# In[ ]:
+
+
+# df_scene
 
 
 # In[ ]:
@@ -283,17 +476,84 @@ for frame_idx in tqdm(range(31,900)):
 # In[ ]:
 
 
-# for cars:
-len(list_idx)
-# list_df_voxel_scene[list_idx]
+# # for road distant lines:
+# df_frame_orig_subtracted.columns = list("xyzr")
+# df_frame_orig_subtracted.plot(kind="scatter", x="x", y="y", figsize=(10, 10))
 
 
 # In[ ]:
 
 
-# for road distant lines:
-df_frame_orig_subtracted.columns = list("xyzr")
-df_frame_orig_subtracted.plot(kind="scatter", x="x", y="y")
+# dff = pd.read_csv("voxelling_output/Original_Frames/0000033_pointcloud.csv", header=None)
+# dff.columns = list("xyzr")
+# dff["l"] = df_labels.tolist()
+# dff = dff[dff.l==1]
+# print(dff.shape)
+# dff.head()
+
+
+# In[ ]:
+
+
+# dff = dff[dff.x>dff.x.min()+(dff.x.max()-dff.x.min())*0.4]
+# print(dff.shape)
+# dff.head()
+
+
+# In[ ]:
+
+
+# dff = dff[dff.z<dff.z.min()+(dff.z.max()-dff.z.min())*0.3]
+# print(dff.shape)
+# dff.head()
+
+
+# In[ ]:
+
+
+# dff = dff[(dff["r"]>5)&(dff["r"]<15)]
+# print(dff.shape)
+# dff.head()
+
+
+# In[ ]:
+
+
+# dff.plot(kind="scatter", x="x", y="y", figsize=(10, 10))
+
+
+# In[ ]:
+
+
+# (df_frame_orig_subtracted.iloc[:, :2]//2*2).plot(kind="scatter", x=0, y=1)
+
+
+# In[ ]:
+
+
+ddf = df_frame_orig_subtracted.iloc[:, :2]//2*2
+
+
+# In[ ]:
+
+
+ddf = (ddf - ddf.min())
+ddf = np.floor((ddf/ddf.max()*256).values)
+ddf
+
+
+# In[ ]:
+
+
+import cv2
+edges = cv2.Canny(gray,50,150,apertureSize = 3)
+minLineLength = 100
+maxLineGap = 10
+lines = cv2.HoughLinesP(edges,1,np.pi/180,100,minLineLength,maxLineGap)
+for x1,y1,x2,y2 in lines[0]:
+    cv2.line(img,(x1,y1),(x2,y2),(0,255,0),2)
+
+cv2.imwrite('houghlines5.jpg',img)
 
 
 # In[ ]:

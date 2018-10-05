@@ -16,7 +16,7 @@ import pandas as pd
 # In[2]:
 
 
-# src_files = glob("E:/Datasets/DataHack/Train/vid_1/*labels*")[15:900]
+# src_files = glob("../data/Train/vid_1/*labels*")[15:900]
 # dst_dir = "voxelling_output/submission_files/vid_1_gt/"
 
 
@@ -29,15 +29,15 @@ import pandas as pd
 
 # ----------------
 
-# In[4]:
+# In[35]:
 
 
-idx = 31
+idx = 100
 filename = '0'*(7-len(str(idx)))+str(idx)+"_labels.csv"
 filename
 
 
-# In[5]:
+# In[36]:
 
 
 gt = pd.read_csv("voxelling_output/submission_files/vid_1_gt/"+filename, header=None)
@@ -45,7 +45,7 @@ gt = pd.read_csv("voxelling_output/submission_files/vid_1_gt/"+filename, header=
 gt.values.sum()
 
 
-# In[6]:
+# In[37]:
 
 
 print(filename)
@@ -54,15 +54,15 @@ pred2 = pd.read_csv("voxelling_output/submission_files/vid_1_pred/"+filename, he
 pred2.values.sum()
 
 
-# In[11]:
+# In[38]:
 
 
 tp, fn, fp = evaluate_frame(gt, pred2)
 iou = tp / (tp+fn+fp)
-iou[0], fn[0], fp[0]
+iou[0], tp[0], fn[0], fp[0]
 
 
-# In[ ]:
+# In[15]:
 
 
 def calc_iou(gt, pred):
@@ -73,13 +73,13 @@ def calc_iou(gt, pred):
 
 # -----------------------------------
 
-# In[ ]:
+# In[9]:
 
 
-tps, fns, fps = evaluate_folder("voxelling_output/submission_files/vid_1_gt/", "voxelling_output/submission_files/vid_1_pred/")
+# tps, fns, fps = evaluate_folder("voxelling_output/submission_files/vid_1_gt/", "voxelling_output/submission_files/vid_1_pred/")
 
 
-# In[ ]:
+# In[10]:
 
 
 iou = tps / (tps+fns+fps)
