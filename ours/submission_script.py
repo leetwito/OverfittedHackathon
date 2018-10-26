@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[13]:
 
 
 from evaluator.iou_evaluator import evaluate_frame, evaluate_folder
@@ -13,14 +13,14 @@ import pandas as pd
 
 # -------------
 
-# In[2]:
+# In[14]:
 
 
 # src_files = glob("../data/Train/vid_1/*labels*")[15:900]
 # dst_dir = "voxelling_output/submission_files/vid_1_gt/"
 
 
-# In[3]:
+# In[15]:
 
 
 # for f in src_files:
@@ -29,15 +29,15 @@ import pandas as pd
 
 # ----------------
 
-# In[35]:
+# In[39]:
 
 
-idx = 100
+idx = 75
 filename = '0'*(7-len(str(idx)))+str(idx)+"_labels.csv"
 filename
 
 
-# In[36]:
+# In[40]:
 
 
 gt = pd.read_csv("voxelling_output/submission_files/vid_1_gt/"+filename, header=None)
@@ -45,16 +45,16 @@ gt = pd.read_csv("voxelling_output/submission_files/vid_1_gt/"+filename, header=
 gt.values.sum()
 
 
-# In[37]:
+# In[41]:
 
 
 print(filename)
-pred2 = pd.read_csv("voxelling_output/submission_files/vid_1_pred/"+filename, header=None)
+pred2 = pd.read_csv("voxelling_output/submission_files/vid_1_pred_lee/"+filename, header=None)
 # pred = pred.T[0]
 pred2.values.sum()
 
 
-# In[38]:
+# In[42]:
 
 
 tp, fn, fp = evaluate_frame(gt, pred2)
@@ -62,7 +62,7 @@ iou = tp / (tp+fn+fp)
 iou[0], tp[0], fn[0], fp[0]
 
 
-# In[15]:
+# In[30]:
 
 
 def calc_iou(gt, pred):
@@ -73,13 +73,13 @@ def calc_iou(gt, pred):
 
 # -----------------------------------
 
-# In[9]:
+# In[48]:
 
 
-# tps, fns, fps = evaluate_folder("voxelling_output/submission_files/vid_1_gt/", "voxelling_output/submission_files/vid_1_pred/")
+tps, fns, fps = evaluate_folder("voxelling_output/submission_files/vid_1_gt/", "voxelling_output/submission_files/vid_1_pred_lee/")
 
 
-# In[10]:
+# In[49]:
 
 
 iou = tps / (tps+fns+fps)

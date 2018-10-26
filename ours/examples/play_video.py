@@ -12,6 +12,8 @@ import os
 import csv
 import time
 
+
+
 if __name__ == '__main__':
 
     # base_dir = os.path.dirname(os.getcwd())
@@ -20,8 +22,8 @@ if __name__ == '__main__':
     # base_dir = "E:\Datasets\DataHack\World\Train"
     # video_dir = os.path.join(base_dir, 'vid_1')
 
-    base_dir = "E:\Datasets\DataHack\World2\Train"
-    video_dir = os.path.join(base_dir, 'vid_1')
+    base_dir = "C:/Users\shlomi\Documents\Work\OverfittedHackathon_data/voxelling_output\Test/"
+    video_dir = os.path.join(base_dir, 'vid_40')
 
 
     # video_dir = os.path.join(base_dir, 'data_examples', 'test_video')

@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[109]:
+# In[37]:
 
 
 import pandas as pd
@@ -13,7 +13,7 @@ import time
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[110]:
+# In[38]:
 
 
 # idx = 185
@@ -21,16 +21,16 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 # filename
 
 
-# In[132]:
+# In[39]:
 
 
-filename = "0000900"
-pcw = pd.read_csv("voxelling_output/submission_files/checks/%s_pointcloud.csv"%filename, header=None)/100
-pred = pd.read_csv("voxelling_output/submission_files/checks/%s_labels.csv"%filename, header=None)
+filename = "0000420"
+pcw = pd.read_csv("../../OverfittedHackathon_data/voxelling_output/submission_files/checks2/%s_pointcloud.csv"%filename, header=None)/100
+pred = pd.read_csv("../../OverfittedHackathon_data/voxelling_output/submission_files/checks2/%s_labels.csv"%filename, header=None)
 # # gt = pd.read_csv("voxelling_output/submission_files/vid_1_gt/"+filename, header=None)
 
 
-# In[133]:
+# In[40]:
 
 
 # labeled_pc
@@ -38,7 +38,7 @@ pcw["gt"] = pred.values
 pcw = pcw.values
 
 
-# In[134]:
+# In[41]:
 
 
 mask = np.zeros(pcw.shape[0]).astype(int)
@@ -48,38 +48,47 @@ mask = np.zeros(pcw.shape[0]).astype(int)
 mask[(pred==1.).values.T[0]] = 3      # tp - purple
 
 
-# In[135]:
+# In[43]:
 
 
 pcshow(pcw, max_points=80000, point_cloud_coloring=mask)
 
 
-# In[79]:
+# In[36]:
 
 
 df = pd.DataFrame(pcw)
 
 
-# In[80]:
+# In[29]:
 
 
+df[3].hist()
+
+
+# In[ ]:
+
+
+import cv2
+np.zeros()
+
+
+# In[ ]:
+
+
+df = pd.DataFrame(pcw)
 df.columns = list('xyzrl')
-
-
-# In[47]:
-
-
-# df[["x", "z"]].plot(kind="scatter", x="x", y="z")
-
-
-# In[148]:
-
-
 df["z_mod"] = df.z/df.x#/np.tan(0.2*np.pi/180)
+print(df.shape)
+df = df[df.x<df.x.min()+3]
+df = df[df.z<(df.z.min()+0.1)]
+print(df.shape)
+
+df.plot(kind="scatter", x="x", y="y", figsize=(10, 10), s=1)
 
 
-# In[149]:
+# In[ ]:
 
 
-df.plot(kind="scatter", x="x", y="y")
+df.z.max()
 

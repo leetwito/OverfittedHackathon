@@ -41,8 +41,8 @@ def add_grid_and_hash(df, voxel_size):
 base_dir = "voxelling_output/World2/Train/vid_1/"
 pickles_path = "voxelling_output/"
 orig_files_path = "voxelling_output/Original_Frames/vid_1/"
-n_frames_per_side=10
-shift=5
+n_frames_per_side=50
+shift=20
 voxel_size=20
 
 
@@ -99,7 +99,7 @@ def get_list_idx_for_frame(frame_idx, n_frames_per_side, shift):
 # In[9]:
 
 
-def create_scene_voxel_df(list_df_voxel_scene, list_idx, frac_to_drop=0.35):
+def create_scene_voxel_df(list_df_voxel_scene, list_idx, frac_to_drop=0.5):
     list_df_voxel_scene_for_frame = list_df_voxel_scene[list_idx]
     df_scene = pd.concat(list_df_voxel_scene_for_frame)#.drop_duplicates("voxel_id")
 #     df_scene.groupby(["x_grid", "y_grid", "z_grid"]).value_counts()
@@ -121,8 +121,9 @@ def create_scene_voxel_df(list_df_voxel_scene, list_idx, frac_to_drop=0.35):
 
 def get_df_voxel_subtracted_frame(list_df_voxel_scene, frame_idx, n_frames_per_side, shift):
     
-    list_idx = get_list_idx_for_frame(frame_idx, n_frames_per_side, shift)
-    
+    list_idx_uf = get_list_idx_for_frame(frame_idx, n_frames_per_side, shift)
+    list_idx = [i for i in list_idx_uf if i>=0 and i<=list_df_voxel_scene.shape[0]]
+#     print ('--get_df_voxel_sub--\nlist idx_uf: {}\nlist_idx   :{}\n-------'.format(list_idx_uf, list_idx))
     df_voxel_scene = create_scene_voxel_df(list_df_voxel_scene, list_idx)
     df_voxel_frame = create_scene_voxel_df(list_df_voxel_scene, [frame_idx])
 
@@ -310,6 +311,7 @@ def remove_high_theta_points(frame_idx, df_labels, orig_files_path):
 
     theta = np.abs(np.arctan(dff.y/dff.x))
     dff = dff[theta>0.9*theta.max()]
+    dff = dff[dff.x>300]
 #     print(dff.shape)
 #     dff.head()
     
@@ -383,7 +385,7 @@ def remove_high_points(frame_idx, df_labels, orig_files_path):
 
 # ---------------------------------
 
-# In[ ]:
+# In[31]:
 
 
 # frame_idx=15
@@ -393,7 +395,9 @@ for frame_idx in tqdm(range(15,900)):
     print("=========================================================================")
 
     tic = time()
-    list_idx = get_list_idx_for_frame(frame_idx, n_frames_per_side, shift)
+    list_idx_uf = get_list_idx_for_frame(frame_idx, n_frames_per_side, shift)
+    list_idx = [i for i in list_idx_uf if i>=0 and i<=list_df_voxel_scene.shape[0]]
+#     print ('--main--\nlist idx_uf: {}\nlist_idx   :{}\n-------'.format(list_idx_uf, list_idx))
     toc = time(); print(toc-tic, ": list_idx = get_list_idx_for_frame(frame_idx, n_frames_per_side, shift)"); tic=time()
     
     df_scene = create_scene_voxel_df(list_df_voxel_scene, list_idx)
@@ -422,14 +426,14 @@ for frame_idx in tqdm(range(15,900)):
     
     print(df_frame_orig_subtracted.shape)
     df_labels = df_labels.astype(int)
-    file_labels = "voxelling_output/submission_files/vid_1_pred/" + os.path.basename(all_files[frame_idx]).replace("pointcloud", "labels")
+    file_labels = "voxelling_output/submission_files/vid_1_pred_lee/" + os.path.basename(all_files[frame_idx]).replace("pointcloud", "labels")
     print("file_labels:", file_labels)
     df_labels.to_csv(file_labels, header=None, index=False)
-    toc = time(); print(toc-tic, ': df_labels.to_csv(pickles_path+"df_labels__frame_%d__%s__voxel_size_%d.p"%(frame_idx, vid, voxel_size))'); tic=time()
+    toc = time(); print(toc-tic, ': df_labels.to_csv(pickles_path+"df_labels__frame_%d__%s__voxel_size_%d_(%d,%d,%d).p"%(frame_idx, vid, voxel_size, n_frames_per_side, shift, n_frames_per_side))'); tic=time()
     
     print(df_labels.sum())
     df_frame_orig_subtracted = df_frame_orig_subtracted.iloc[:, :4]
-    df_frame_orig_subtracted.to_csv(pickles_path+"df_frame_orig_subtracted__frame_%d__%s__voxel_size_%d.csv"%(frame_idx, vid, voxel_size), header=None, index=False)
+    df_frame_orig_subtracted.to_csv(pickles_path+"df_frame_orig_subtracted__frame_%d__%s__voxel_size%d_(%d,%d,%d).p"%(frame_idx, vid, voxel_size, n_frames_per_side, shift, n_frames_per_side)), header=None, index=False)
 #     save_frame_for_movie(df_frame_orig_subtracted, "tmp_only_labeled/", all_files, frame_idx)
     toc = time(); print(toc-tic, ': save_frame_for_movie(df_frame_orig_subtracted, "tmp_only_labeled/", all_files, frame_idx)'); tic=time()
 

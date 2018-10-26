@@ -36,10 +36,12 @@ voting_scene_frac_to_drop = 0.3
 # In[3]:
 
 
-base_dir = "C:/Users\shlomi\Documents\Work\OverfittedHackathon\ours/voxelling_output\Test_world_2/vid_19/"
-pickles_path = "voxelling_output/"
-orig_files_path = "C:/Users\shlomi\Documents\Work\OverfittedHackathon/ours/voxelling_output/Test/vid_19/"
-labels_path = "voxelling_output/submission_files/test_vid_19_pred__final/"
+base_dir = "../../OverfittedHackathon_data/voxelling_output/Test_world_2/vid_19/"
+pickles_path = "../../OverfittedHackathon_data/voxelling_output/"
+orig_files_path = "../../OverfittedHackathon_data/voxelling_output/Test/vid_19/"
+labels_path = "../../OverfittedHackathon_data/voxelling_output/submission_files/test_vid_19_pred__lines/"
+labels_path = "../../OverfittedHackathon_data/voxelling_output/submission_files/checks2/"
+
 # labels_path = "voxelling_output/submission_files/checks/"
 
 
@@ -195,7 +197,7 @@ def remove_distant_lines(frame_idx, df_labels, orig_files_path):
 #     print(dff.shape)
 #     dff.head()
     
-    dff = dff[dff.z<dff.z.min()+(dff.z.max()-dff.z.min())*0.3]
+    dff = dff[dff.z<(dff.z.min()+(dff.z.max()-dff.z.min())*0.3)]
 #     print(dff.shape)
 #     dff.head()
 
@@ -251,7 +253,7 @@ def remove_high_theta_points(frame_idx, df_labels, orig_files_path):
 #     dff.head() 
 
     theta = np.abs(np.arctan(dff.y/dff.x))
-    dff = dff[theta>0.9*theta.max()]
+    dff = dff[theta>0.97*theta.max()]
     dff = dff[dff.x>300]
 #     print(dff.shape)
 #     dff.head()
@@ -352,13 +354,50 @@ def remove_low_points(frame_idx, df_labels, orig_files_path):
     return df_labels
 
 
+# In[22]:
+
+
+def remove_low_points_2(frame_idx, df_labels, orig_files_path):
+    filename = (7-len(str(frame_idx)))*"0"+str(frame_idx)+"_pointcloud.csv"
+    dff = pd.read_csv(orig_files_path+filename, header=None)
+    dff.columns = list("xyzr")
+    dff["l"] = df_labels.tolist()
+    dff = dff[dff.l==1]
+#     print(dff.shape)
+#     dff.head() 
+
+#     dff = dff[dff.x<dff.x.min()+(dff.x.max()-dff.x.min())*0.15]
+#     print(dff.shape)
+#     dff.head()
+#     print("\n\nXMIN:", dff.x.min())
+    dff = dff[dff.x>dff.x.min()+300]
+#     dff = dff[dff.z<(dff.z.min()+40)]
+    dff = dff[dff.z<(dff.z.nsmallest(1000).iloc[999]+10)]
+
+    print(dff)
+        
+
+#     dff = dff[(dff["r"]>5)&(dff["r"]<15)]
+
+    print(dff.shape)
+    dff.head()
+
+#     dff = dff[(dff["r"]>5)&(dff["r"]<15)]
+# #     print(dff.shape)
+# #     dff.head()
+
+    df_labels.loc[dff.index] = False
+    return df_labels
+
+
 # ---------------------------------
 
-# In[ ]:
+# In[23]:
 
 
 # frame_idx=15
-frames_range = range(1000)
+frames_range = range(1, 3)# range(1000)
+frames_range = range(420, 431)
 # frames_range = range(15,900)
 for frame_idx in tqdm(frames_range):
     print("=========================================================================")
@@ -421,12 +460,22 @@ for frame_idx in tqdm(frames_range):
     
     
     # filters
+    print(df_labels.sum())
     df_labels = remove_distant_lines(frame_idx, df_labels, orig_files_path)
+    print(df_labels.sum())
     df_labels = remove_distant_points(frame_idx, df_labels, orig_files_path)
+    print(df_labels.sum())
     df_labels = remove_close_lines(frame_idx, df_labels, orig_files_path)
+    print(df_labels.sum())
     df_labels = remove_high_points(frame_idx, df_labels, orig_files_path)
+    print(df_labels.sum())
     df_labels = remove_low_points(frame_idx, df_labels, orig_files_path)
+    print("LOW POINTS:", df_labels.sum())
+    df_labels = remove_low_points_2(frame_idx, df_labels, orig_files_path)
+    print("LOW POINTS 2:", df_labels.sum())
     df_labels = remove_high_theta_points(frame_idx, df_labels, orig_files_path)
+    print(df_labels.sum())
+    
     
 #     df_labels.iloc[:] = False
     
@@ -445,10 +494,4 @@ for frame_idx in tqdm(frames_range):
 #     df_frame_orig_subtracted.to_csv(pickles_path+"df_frame_orig_subtracted__frame_%d__%s__voxel_size%d_(%d,%d,%d).p"%(frame_idx, vid, voxel_size, n_frames_per_side, shift, n_frames_per_side)), header=None, index=False)
 #     save_frame_for_movie(df_frame_orig_subtracted, "tmp_only_labeled/", all_files, frame_idx)
     toc = time(); print(toc-tic, ': save_frame_for_movie(df_frame_orig_subtracted, "tmp_only_labeled/", all_files, frame_idx)'); tic=time()
-
-
-# In[ ]:
-
-
-list_idx
 

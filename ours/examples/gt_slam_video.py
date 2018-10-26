@@ -7,6 +7,9 @@
 import pandas as pd
 import os
 import numpy as np
+import sys
+sys.path.append('C:\\Users\shlomi\Documents\Work\OverfittedHackathon\ours')
+# sys.path.append('./examples')
 from utilities.math_utils import RotationTranslationData
 from visualizations.vis import pcshow
 from utilities import data_utils
@@ -18,12 +21,12 @@ if __name__ == '__main__':
 
 
     # base_dir = "E:\Datasets\DataHack\Train"
-    base_dir = "E:\Datasets\DataHack\Test"
-    sub_dir = 'vid_40'
+    base_dir = "C:/Users\shlomi\Documents\Work\OverfittedHackathon\ours/voxelling_output\Test"
+    sub_dir = 'vid_42'
     video_dir = os.path.join(base_dir, sub_dir)
 
     # dest_base_dir = "E:\Datasets\DataHack\World2\Train"
-    dest_base_dir = "E:\Datasets\DataHack\World2\Test"
+    dest_base_dir = "C:/Users\shlomi\Documents\Work\OverfittedHackathon\ours/voxelling_output\Test_world_2"
     dest_dir = os.path.join(dest_base_dir, sub_dir)
 
 

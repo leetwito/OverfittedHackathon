@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 import pandas as pd
@@ -20,7 +20,7 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 
 # #### Params and Paths:
 
-# In[ ]:
+# In[2]:
 
 
 const_n_frames_per_side=100
@@ -33,7 +33,7 @@ voxel_size=20
 voting_scene_frac_to_drop = 0.3
 
 
-# In[ ]:
+# In[3]:
 
 
 base_dir = "C:/Users\shlomi\Documents\Work\OverfittedHackathon\ours/voxelling_output\Test_world_2/vid_42/"
@@ -45,7 +45,7 @@ labels_path = "voxelling_output/submission_files/test_vid_42_pred__final/"
 
 # -----------------------------
 
-# In[ ]:
+# In[4]:
 
 
 def add_grid_and_hash(df, voxel_size):
@@ -60,19 +60,19 @@ def add_grid_and_hash(df, voxel_size):
     return df_grid
 
 
-# In[ ]:
+# In[5]:
 
 
 all_files = glob(base_dir+"/*point*")
 
 
-# In[ ]:
+# In[6]:
 
 
 vid = base_dir.split("/")[-2]
 
 
-# In[ ]:
+# In[7]:
 
 
 def create_list_dfs_voxel_scene(base_dir, voxel_size, upto=None):
@@ -88,7 +88,7 @@ def create_list_dfs_voxel_scene(base_dir, voxel_size, upto=None):
     return list_df_voxel_scene
 
 
-# In[ ]:
+# In[8]:
 
 
 list_df_file = pickles_path+"list_df_voxel_scene__%s__voxel_size_%d.p"%(vid, voxel_size)
@@ -102,7 +102,7 @@ else:
 
 # ----------------------
 
-# In[ ]:
+# In[9]:
 
 
 def get_list_idx_for_frame(frame_idx, n_frames_per_side, shift):
@@ -111,7 +111,7 @@ def get_list_idx_for_frame(frame_idx, n_frames_per_side, shift):
     return list_idx
 
 
-# In[ ]:
+# In[10]:
 
 
 def create_scene_voxel_df(list_df_voxel_scene, list_idx, frac_to_drop=0.5):
@@ -134,7 +134,7 @@ def create_scene_voxel_df(list_df_voxel_scene, list_idx, frac_to_drop=0.5):
     return df_scene
 
 
-# In[ ]:
+# In[11]:
 
 
 def get_df_voxel_subtracted_frame(list_df_voxel_scene, frame_idx, n_frames_per_side, shift):
@@ -148,7 +148,7 @@ def get_df_voxel_subtracted_frame(list_df_voxel_scene, frame_idx, n_frames_per_s
     return df_subtracted_frame
 
 
-# In[ ]:
+# In[12]:
 
 
 def point_to_voxel(ser, voxel_size):
@@ -161,7 +161,7 @@ def point_to_voxel(ser, voxel_size):
     return voxel_id
 
 
-# In[ ]:
+# In[13]:
 
 
 def save_frame_for_movie(frame, folder, all_files, frame_idx):
@@ -179,7 +179,7 @@ def save_frame_for_movie(frame, folder, all_files, frame_idx):
 
 # #### Filters:
 
-# In[ ]:
+# In[14]:
 
 
 def remove_distant_lines(frame_idx, df_labels, orig_files_path):
@@ -207,7 +207,7 @@ def remove_distant_lines(frame_idx, df_labels, orig_files_path):
     return df_labels
 
 
-# In[ ]:
+# In[15]:
 
 
 def remove_distant_points(frame_idx, df_labels, orig_files_path):
@@ -238,7 +238,7 @@ def remove_distant_points(frame_idx, df_labels, orig_files_path):
     return df_labels
 
 
-# In[ ]:
+# In[16]:
 
 
 def remove_high_theta_points(frame_idx, df_labels, orig_files_path):
@@ -268,7 +268,7 @@ def remove_high_theta_points(frame_idx, df_labels, orig_files_path):
     return df_labels
 
 
-# In[ ]:
+# In[17]:
 
 
 def remove_close_lines(frame_idx, df_labels, orig_files_path):
@@ -296,7 +296,7 @@ def remove_close_lines(frame_idx, df_labels, orig_files_path):
     return df_labels
 
 
-# In[ ]:
+# In[18]:
 
 
 def remove_high_points(frame_idx, df_labels, orig_files_path):
@@ -324,7 +324,7 @@ def remove_high_points(frame_idx, df_labels, orig_files_path):
     return df_labels
 
 
-# In[ ]:
+# In[19]:
 
 
 def remove_low_points(frame_idx, df_labels, orig_files_path):
@@ -354,7 +354,7 @@ def remove_low_points(frame_idx, df_labels, orig_files_path):
 
 # ---------------------------------
 
-# In[ ]:
+# In[20]:
 
 
 # frame_idx=15
@@ -447,7 +447,7 @@ for frame_idx in tqdm(frames_range):
     toc = time(); print(toc-tic, ': save_frame_for_movie(df_frame_orig_subtracted, "tmp_only_labeled/", all_files, frame_idx)'); tic=time()
 
 
-# In[ ]:
+# In[21]:
 
 
 list_idx
