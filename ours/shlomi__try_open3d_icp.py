@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[29]:
 
 
 import pandas as pd
@@ -15,18 +15,21 @@ import numpy as np
 import copy
 
 
-# In[2]:
+# In[39]:
 
 
-path = "voxelling_output/submission_files/check_registration/"
-pcw1 = pd.read_csv(path+"0000007_pointcloud.csv", header=None)
-pcw2 = pd.read_csv(path+"0000020_pointcloud.csv", header=None)
+path = "C:/Users/shlomi/Documents/Work/OverfittedHackathon_data/voxelling_output/Test/vid_21/"
+pcw1 = pd.read_csv(path+"0000107_pointcloud.csv", header=None)
+pcw2 = pd.read_csv(path+"0000120_pointcloud.csv", header=None)
+
+pcw1 = pcw1[(pcw1[0]>1500)&(pcw1[2]>50)]
+pcw2 = pcw2[(pcw2[0]>1500)&(pcw2[2]>50)]
 
 pcw1.iloc[:, :3].to_csv(path+"source.xyz", sep=" ", header=None, index=None)
 pcw2.iloc[:, :3].to_csv(path+"target.xyz", sep=" ", header=None, index=None)
 
 
-# In[3]:
+# In[40]:
 
 
 def draw_registration_result(source, target, transformation):
@@ -38,26 +41,26 @@ def draw_registration_result(source, target, transformation):
     draw_geometries([source_temp, target_temp])
 
 
-# In[4]:
+# In[41]:
 
 
 source = read_point_cloud(path+"source.xyz")
 target = read_point_cloud(path+"target.xyz")
 
 
-# In[5]:
+# In[42]:
 
 
 source
 
 
-# In[6]:
+# In[51]:
 
 
-threshold = 1000000000000000000
+threshold = 100000000000000000000000
 
 trans_init = np.eye(4)
-trans_init[:3, 3] = 100*np.random.rand(3)
+trans_init[:3, 3] = [0,0,0]
 
 # trans_init = np.array([[np.cos(np.pi/8), np.sin(np.pi/8), 0., 10.],
 #                       [-np.sin(np.pi/8), np.cos(np.pi/8), 0., 20.],
@@ -66,13 +69,13 @@ trans_init[:3, 3] = 100*np.random.rand(3)
 trans_init
 
 
-# In[7]:
+# In[52]:
 
 
 draw_registration_result(source, target, trans_init)
 
 
-# In[8]:
+# In[53]:
 
 
 print("Initial alignment")
@@ -81,7 +84,7 @@ evaluation = evaluate_registration(source, target,
 print(evaluation)
 
 
-# In[9]:
+# In[54]:
 
 
 print("Apply point-to-point ICP")
@@ -94,7 +97,7 @@ print("")
 draw_registration_result(source, target, reg_p2p.transformation)
 
 
-# In[12]:
+# In[ ]:
 
 
 R = reg_p2p.transformation
@@ -104,13 +107,13 @@ print(R.shape)
 
 # -------------------------------
 
-# In[35]:
+# In[ ]:
 
 
 from utilities.math_utils import extract_rotation, extract_translation
 
 
-# In[36]:
+# In[ ]:
 
 
 rot = extract_rotation(R)
@@ -120,7 +123,7 @@ rot, trans
 
 # ---------------------------------------------
 
-# In[37]:
+# In[ ]:
 
 
 def rot_and_trans_mat_to_euler_3d(R):
@@ -135,19 +138,19 @@ def rot_and_trans_mat_to_euler_3d(R):
     return (x_t, y_t, z_t), (alpha, beta, gamma)
 
 
-# In[38]:
+# In[ ]:
 
 
 trans, rot = rot_and_trans_mat_to_euler_3d(R)
 
 
-# In[39]:
+# In[ ]:
 
 
 rot, trans  ## looks like my function iz good but alpha and gamma should replace positions 
 
 
-# In[44]:
+# In[ ]:
 
 
 gt_ego1 = pd.read_csv(path+"0000007_egomotion.csv", header=None)
@@ -157,7 +160,7 @@ gt_ego1-gt_ego2
 
 # ----------------------------------------
 
-# In[1]:
+# In[ ]:
 
 
 from glob import glob
