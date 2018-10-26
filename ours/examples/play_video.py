@@ -17,11 +17,13 @@ if __name__ == '__main__':
     # base_dir = os.path.dirname(os.getcwd())
 
 
-    # base_dir = "E:\Datasets\DataHack\World\Train"
+    # base_dir = "E:\Datasets\DataHack\Train"
     # video_dir = os.path.join(base_dir, 'vid_1')
 
-    base_dir = "E:\Datasets\DataHack\World2\Train"
-    video_dir = os.path.join(base_dir, 'vid_1')
+    base_dir = "E:\Datasets\DataHack\Test"
+    video_dir = os.path.join(base_dir, 'vid_21_estimate_egomotion')
+    # base_dir = "E:\Datasets\DataHack\World2\Train"
+    # video_dir = os.path.join(base_dir, 'vid_4')
 
 
     # video_dir = os.path.join(base_dir, 'data_examples', 'test_video')
@@ -42,6 +44,7 @@ if __name__ == '__main__':
             continue
         pc, ego, label = data_utils.read_all_data(video_dir, frame)
         labeled_pc = np.concatenate((pc, label), -1)
+        # labeled_pc = np.concatenate((pc, np.ones((pc.shape[0], 1), dtype=np.float), -1))
         pcshow(labeled_pc, on_screen_text=osp.join(video_dir, str(frame)), max_points=80000)
         # time.sleep(1)
 

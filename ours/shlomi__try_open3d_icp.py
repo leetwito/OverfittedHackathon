@@ -157,7 +157,7 @@ gt_ego1-gt_ego2
 
 # ----------------------------------------
 
-# In[16]:
+# In[1]:
 
 
 from glob import glob
@@ -200,10 +200,10 @@ for xyz_path in xyz_paths[1:]:
     trans = extract_translation(R)
     cur_ego.at[0, :2] = rot
     cur_ego.at[0, 3:] = trans
-    print(cur_ego.T)
+    print(cur_ego)
     print("")    
     
-    cur_ego.iloc[0].T.to_csv(xyz_path.replace('.xyz', '_egomotion.csv'), sep=" ", header=None, index=None)
+    cur_ego.iloc[0, :].T.to_csv(xyz_path.replace('.xyz', '_egomotion.csv'), sep=" ", header=None, index=None)
     R_prev = R
     pc_prev = pc_cur
 
