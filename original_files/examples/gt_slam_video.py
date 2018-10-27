@@ -17,9 +17,9 @@ if __name__ == '__main__':
     # video_dir = os.path.join(base_dir, 'data_examples', 'test_video')
     video_dir = 'E:/Datasets/DataHack/Test/vid_21_estimate_egomotion'
     agg_point_cloud_list = []
-    max_frames_to_keep = 10
+    max_frames_to_keep = 5
     min_idx = 0
-    decimate = 30
+    decimate = 10
     max_dist = 100
     for idx in data_utils.enumerate_frames(video_dir):
         if idx < min_idx or idx % decimate != 0:
